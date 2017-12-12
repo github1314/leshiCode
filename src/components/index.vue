@@ -1,18 +1,17 @@
 <template>
     <div class="homePage">
-
         <div class="banner"></div>
         <div class="introduce">
             <div>
-                <img src="../assets/homePage/QQ图片20171115150923.png" alt="">
+                <img src="../assets/homePage/homepage1.png" alt="">
                 <p>首期授信期限:1年</p>
             </div>
             <div>
-                <img src="../assets/homePage/QQ图片20171115150923.png" alt="">
+                <img src="../assets/homePage/homepage2.png" alt="">
                 <p>融资期限:不超过90天</p>
             </div>
             <div>
-                <img src="../assets/homePage/QQ图片20171115150923.png" alt="">
+                <img src="../assets/homePage/homepage3.png" alt="">
                 <p>利率:年化12%~18%</p>
             </div>
             <div>
@@ -261,10 +260,27 @@
                 width: 1200px;
                 min-width: 1200px;
                 margin: 0 auto;
+                li:nth-child(1){
+                    background: url("../assets/homePage/list1.png") no-repeat 115px 55px;
+                }
+                li:nth-child(2){
+                    background: url("../assets/homePage/list2.png") no-repeat 115px 55px;
+                }
+                li:nth-child(3){
+                    background: url("../assets/homePage/list3.png") no-repeat 115px 55px;
+                }
+                li:nth-child(4){
+                    background: url("../assets/homePage/2-4.png") no-repeat 115px 55px;
+                }
+                li:nth-child(5){
+                    background: url("../assets/homePage/2-5.png") no-repeat 115px 55px;
+                }
+                li:nth-child(6){
+                    background: url("../assets/homePage/2-6.png") no-repeat 115px 55px;
+                }
                 li{
                     width: 400px;
                     float: left;
-                    background: url("../assets/homePage/111.png") no-repeat 115px 55px;
                     padding-left: 211px;
                     padding-top: 50px;
                     padding-bottom: 35px;

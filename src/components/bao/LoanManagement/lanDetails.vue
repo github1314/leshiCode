@@ -1,40 +1,51 @@
 <template>
     <div class="financingExamineDetails">
-        <header>我的待还款详情<span @click="back_list()">返回列表</span></header>
+        <header>{{title}}<span @click="back_list()">返回列表</span></header>
         <div class="financingExamineDetails_header">
-            <span>状态:待还款</span><span v-if="!loanBtnShow" class="exmineBtn">申请还款</span><span v-if="loanBtnShow" class="exmineBtn">确认合同</span>
+            <span v-if="code == '1'">状态:待审核</span>
+            <span v-if="code == '2'">状态:审核不通过</span>
+            <span v-if="code == '3'">状态:待签章</span>
+            <span v-if="code == '4'">状态:待放款</span>
+            <span v-if="code == '5'">状态:已放款</span>
+            <span v-if="code == '6'">状态:待还款</span>
+            <span v-if="code == '7'">状态:已逾期</span>
+            <span v-if="code == '8'">状态:待还款</span>
+            <span v-if="code == '9'">状态:已还款</span>
+            <span v-if="code == '10'">状态:已逾期</span>
+            <span v-if="code =='11'">状态:还款失败</span>
+            <router-link v-if="!loanBtnShow" class="exmineBtn" :to="{name:'repaymentPage',params:{id:loanData1.applyNum||0}}" tag="span">申请还款</router-link>
         </div>
         <div class="financingExamineDetails_c clearFix">
             <div class="financingExamineDetails_c_l">
                 <ul>
                     <li>
                         <span>贷款编号</span>
-                        <span>123123412</span>
+                        <span>{{loanData1.applyNum}}</span>
                     </li>
                     <li>
                         <span>贷款金额</span>
-                        <span>7960.00元</span>
+                        <span>{{loanData1.loanAmount | currency('') }}元</span>
                     </li>
                     <li>
                         <span>利率</span>
-                        <span>12%</span>
+                        <span>{{loanData1.totalRate}}%</span>
                     </li>
                     <li>
                         <span>担保方式</span>
-                        <span>发票</span>
+                        <span>{{loanData1.assureMeans}}</span>
                     </li>
                     <li>
                         <span>贷款投向</span>
-                        <span>工业</span>
+                        <span>{{loanData1.industryTo}}</span>
                     </li>
                     <li>
                         <span>贷款合同</span>
-                        <span>合同编号123</span>
-                        <span>预览合同</span>
+                        <span class="ht_style" @click="ht_details(loanData1.reserveContractNum)">{{loanData1.reserveContractNum}}</span>
+                        <!--<span>预览合同</span>-->
                     </li>
                     <li>
                         <span>服务费</span>
-                        <span>12%</span>
+                        <span>{{loanData1.serverFee}}%</span>
                     </li>
                 </ul>
             </div>
@@ -42,31 +53,31 @@
                 <ul>
                     <li>
                         <span>产品名称</span>
-                        <span>乐小宝</span>
+                        <span>{{loanData1.productName}}</span>
                     </li>
                     <li>
                         <span>贷款到账日</span>
-                        <span>2017-09-32</span>
+                        <span>{{loanData1.applyAccountTime}}</span>
                     </li>
                     <li>
                         <span>贷款到期日</span>
-                        <span>2422-04-23</span>
+                        <span>{{loanData1.endTime}}</span>
                     </li>
                     <li>
                         <span>贷款用途</span>
-                        <span>生产</span>
+                        <span>{{loanData1.loanPurpose}}</span>
                     </li>
                     <li>
                         <span>争议解决方式</span>
-                        <span>仲裁</span>
+                        <span>{{loanData1.settlementType}}</span>
                     </li>
                     <li>
                         <span>申请时间</span>
-                        <span>2234-34-33 12:22:22</span>
+                        <span>{{loanData1.applyTime}}</span>
                     </li>
                     <li>
                         <span>手续费</span>
-                        <span>12%</span>
+                        <span>{{loanData1.counterFee}}%</span>
                     </li>
                 </ul>
             </div>
@@ -79,19 +90,19 @@
                 <ul>
                     <li>
                         <span>费用总计</span>
-                        <span>233.33元</span>
+                        <span>{{loanData2.periodMoney | currency('')}}元</span>
                     </li>
                     <li>
                         <span>利息</span>
-                        <span>7960.00元</span>
+                        <span>{{loanData2.interest | currency('')}}元</span>
                     </li>
                     <li>
                         <span>服务费</span>
-                        <span>42.33元</span>
+                        <span>{{loanData2.serverFee | currency('')}}元</span>
                     </li>
                     <li>
-                        <span>属续费</span>
-                        <span>33.22元</span>
+                        <span>手续费</span>
+                        <span>{{loanData2.counterFee | currency('')}}元</span>
                     </li>
                 </ul>
             </div>
@@ -99,19 +110,19 @@
                 <ul>
                     <li>
                         <span>预计到账金额</span>
-                        <span>7960.00元</span>
+                        <span>{{loanData2.recvMoney | currency('')}}元</span>
                     </li>
                     <li>
                         <span>还款方式</span>
-                        <span>一次性还本付息</span>
+                        <span>{{loanData2.repaymentType}}</span>
                     </li>
                     <li>
                         <span>服务费收取方式</span>
-                        <span>先收</span>
+                        <span>{{loanData2.servicePayType}}</span>
                     </li>
                     <li>
                         <span>手续费收取方式</span>
-                        <span>先收</span>
+                        <span>{{loanData2.procedureType}}</span>
                     </li>
                 </ul>
             </div>
@@ -129,14 +140,14 @@
                 <th>合计(元)</th>
                 <th>付款方</th>
             </tr>
-            <tr v-for="i in 2" :key="i">
-                <td>2018-09-09</td>
-                <td>8000.00</td>
-                <td>51.56</td>
-                <td>--</td>
-                <td>12.89</td>
-                <td>8045.89</td>
-                <td>乐视致新</td>
+            <tr v-for="item in loanData3">
+                <td>{{item.repayDate}}</td>
+                <td>{{item.amortizedPrincipal}}</td>
+                <td>{{item.amortizedInterest}}</td>
+                <td>{{item.PFEE}}</td>
+                <td>{{item.SFEE}}</td>
+                <td>{{item.periodMoney}}</td>
+                <td>{{item.payer}}</td>
             </tr>
         </table>
         <div class="financingExamineDetails_h">
@@ -147,11 +158,11 @@
                 <ul>
                     <li>
                         <span>贷款金额</span>
-                        <span>233.33元</span>
+                        <span>{{loanData4.loanAmount | currency('')}}元</span>
                     </li>
                     <li>
                         <span>利息</span>
-                        <span>7960.00元</span>
+                        <span>{{loanData4.interest | currency('')}}元</span>
                     </li>
                 </ul>
             </div>
@@ -159,11 +170,11 @@
                 <ul>
                     <li>
                         <span>融资率</span>
-                        <span>90.33%</span>
+                        <span>{{loanData4.financingRate}}%</span>
                     </li>
                     <li>
                         <span>付款凭证号</span>
-                        <span>2334432244</span>
+                        <span>{{loanData4.evidenceOfPaymentNum}}</span>
                     </li>
                 </ul>
             </div>
@@ -177,25 +188,56 @@
         name: '',
         data() {
             return {
-                type:'',
-                loanBtnShow:true
+                title:'',
+                loanBtnShow:true,
+                loanData1:'',
+                loanData2:'',
+                loanData3:'',
+                loanData4:'',
             }
         },
         components: { shisuanResult },
         methods: {
             back_list(){
-                this.$router.go(-1)
+                this.$router.go(-1);
+            },
+            ht_details(val){
+//                console.log(val);
+                this.$http.post('/api/loan1/getContract',this.qs.stringify({reserveContractNum:val})).then((res)=>{
+                    if(res.data.code == 200){
+                        window.open(res.data.data.contrackURL);
+                    }else {
+                        this.$notify.error({
+                            title: '错误',
+                            message: res.data.msg
+                        });
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                })
             }
         },
         created:function () {
-            console.log(this.$route);
+            let _this = this;
+             //查看详情状态吗
+            this.code = this.$route.params.code;
+            //查看详情的编号
+            this.id = this.$route.params.id;
             if(this.$route.params.type === 'loan'){
-                this.type = '我的借款详情';
+                this.title = '我的借款详情';
                 this.loanBtnShow = true;
             }else if(this.$route.params.type === 'repayment'){
-                this.type = '我的还款详情';
+                this.title = '我的还款详情';
                 this.loanBtnShow = false;
             }
+            //贷款详情的谁请求
+            this.$http.post('/api/loan1/loanDetail',this.qs.stringify({applyNum:this.id})).then((res)=>{
+                _this.loanData1 = res.data.data.detail;
+                _this.loanData2 = res.data.data.loanParticulars;
+                _this.loanData3 = res.data.data.periodSchedulesList;
+                _this.loanData4 = res.data.data.lockAccountsReceivable;
+            }).catch((err)=>{
+            });
         }
     }
 </script>
@@ -277,11 +319,10 @@
                     &>li{
                         height:45px;
                         line-height:45px;
-                        &>span:nth-child(3){
+                        &>span.ht_style{
                             font-size: 16px;
-                            color: #3993FF;
+                            color: #3993FF !important;
                             letter-spacing: 0;
-                            padding-left: 20px;
                             text-decoration: underline;
                             cursor: pointer;
                         }

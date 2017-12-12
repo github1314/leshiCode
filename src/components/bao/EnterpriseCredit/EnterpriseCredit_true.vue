@@ -2,40 +2,42 @@
     <div class="EnterpriseCredit_true" id="EnterpriseCredit_true">
         <!--企业授信有数据（通过）的情况下-->
         <ul class="form_list">
-            <li>
+            <li v-for="item in dataList">
                 <div class="listDisplay_title clearFix">
                     <p>
-                        <span>乐小宝</span>
-                        <span>2016-12-11</span>
-                        <span>12:30:01</span>
+                        <span>{{item.productName}}</span>
+                        <span>{{item.creatTime}}</span>
+                        <!--<span>12:30:01</span>-->
                     </p>
                     <div>
-                        <router-link :to="{name:'changeEnterpriseCredit'}"  class="modify" tag="a"><i class="el-icon-edit-outline"></i>修改</router-link>
-                        <a href="#" class="del" v-if="false"><i class="el-icon-delete"></i>删除</a>
+                        <!--<a href="#" class="del" v-if="false"><i class="el-icon-delete"></i>删除</a>-->
                     </div>
                 </div>
                 <div class="listDisplay_content">
                     <ul class="clearFix">
                         <li>
-                            <p>100,000.00</p>
+                            <p>{{item.preCreditAmount}}</p>
                             <p>年度预算金额(元)</p>
                         </li>
                         <li>
-                            <p>审核中</p>
+                            <p v-if="item.status == '1'">审核中</p>
+                            <p v-if="item.status == '2'">已生效</p>
+                            <p v-if="item.status == '3'">审核未通过</p>
                             <p>状态</p>
                         </li>
                         <li>
-                            <p>2017-06-21</p>
+                            <p>{{item.endDate}}</p>
                             <p>失效日期</p>
                         </li>
                         <li>
-                            <p>——</p>
+                            <p>{{item.amountOfCreditAvailable}}</p>
                             <p>可用授信金额</p>
                         </li>
                         <li>
                             <!--<a href="#" v-if="true" class="apply">申请变更</a>-->
-                            <a href="#" class="apply">查看详情</a>
-                            <a href="#" v-if="true" class="aeapply">重新申请</a>
+                            <router-link  v-if="item.status=='3'" :to="{name:'changeEnterpriseCredit',params:{id:item.limitKey}}" class="aeapply">重新申请</router-link>
+                            <router-link v-if="item.status=='2'" class="apply" :to="{name:'changeEnterpriseCredit',params:{id:item.limitKey}}">申请变更</router-link>
+                            <router-link class="apply" :to="{name:'changeEnterpriseCredit',params:{id:item.limitKey}}">查看详情</router-link>
                         </li>
                     </ul>
                 </div>
@@ -51,13 +53,29 @@
     export default {
         name: 'EnterpriseCredit_true',
         data() {
-            return {}
+            return {
+                dataList:''
+            }
         },
         components: {
             listDisplay,
             recommend
         },
-        methods: {}
+        methods: {},
+        beforeCreate:function () {
+            this.$http.post('/api/creditManageController/creditDetailList',this.qs.stringify({userId:this.$store.state.account.id})).then((res)=>{
+                if(res.data.code == 200){
+                    this.dataList = res.data.data.creditList;
+                }else {
+                    this.$notify.error({
+                        title: '错误',
+                        message: res.data.msg
+                    });
+                }
+            }).catch((err)=>{
+                console.log(err);
+            });
+        }
     }
 </script>
 

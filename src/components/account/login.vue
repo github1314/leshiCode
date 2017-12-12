@@ -5,11 +5,11 @@
                 <h2>登陆</h2>
                 <div class="ipt">
                     <i class="iconfont icon-zhanghao"></i>
-                    <input type="text">
+                    <input type="text" v-model="form.mobileNumber">
                 </div>
                 <div class="ipt mt">
                     <i class="iconfont icon-mima"></i>
-                    <input type="password">
+                    <input type="password" v-model="form.passWord">
                 </div>
                 <div class="retrieve clearFix">
                     <router-link :to="{name:'getpassword'}">忘记密码？</router-link>
@@ -27,9 +27,14 @@
     export default {
         name: 'login',
         // 数据
-
         data() {
-            return {}
+            return {
+                form: {
+                    mobileNumber: '18511110837',
+                    passWord: '111111',
+                },
+                rules: {}
+            }
         },
 
         // 计算属性
@@ -38,12 +43,46 @@
         // 事件
         methods: {
             login() {
-                this.$message({
-                    showClose: true,
-                    duration: 3000,
-                    dangerouslyUseHTMLString: true,
-                    message: '提示信息'
-                })
+
+                let self = this;
+
+                let phone = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/.test(this.form.mobileNumber);
+                let pwd = (this.form.passWord);
+
+                if (!phone) {
+                    this.$message({
+                        showClose: true,
+                        message: '请输入正确的手机号！',
+                        type: 'error'
+                    });
+                } else if (!pwd) {
+                    this.$message({
+                        showClose: true,
+                        message: '请输入密码！',
+                        type: 'error'
+                    });
+                } else {
+                    this.$http.post('/api/syst/loginUser', this.qs.stringify(self.form)).then(response => {
+                        if (response.data.code !== 200) {
+                            this.$message({
+                                showClose: true,
+                                message: response.data.msg,
+                                type: 'error'
+                            });
+                        } else if (response.data.code === 200) {
+                            // 成功
+                            // this.$store.state.account.login = true;
+                            this.$store.commit('info',{
+                                login:true,
+                                id:response.data.data.adminId,
+                                username:response.data.data.adminName,
+                            });
+                            this.$router.push({name: 'overview'});
+                        }
+                    }).catch(error => {
+                    });
+                }
+
             }
         },
 
@@ -62,6 +101,7 @@
 
     .login {
         width: 100%;
+        display: block !important;
         min-height: @content_min_height;
         background: url("../../assets/account/login/login-banner.png") no-repeat center;
         background-size: cover;

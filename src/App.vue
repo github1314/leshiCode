@@ -92,6 +92,8 @@
             }
         }
     }
-
-
+    .el-loading-mask{
+        background-color: rgba(255,255,255,1);
+        min-height:500px;
+    }
 </style>

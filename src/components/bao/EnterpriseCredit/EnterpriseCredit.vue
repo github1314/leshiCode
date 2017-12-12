@@ -1,6 +1,6 @@
 <template>
     <div class="EnterpriseCredit">
-        <header>企业授信<router-link class="EnterpriseCredit_btn" :to="{name:'addEnterpriseCredit'}" @click="foo()">新增授信</router-link></header>
+        <header>企业授信<router-link class="EnterpriseCredit_btn" :to="{name:'addEnterpriseCredit',params:{id:1}}" @click="foo()">新增授信</router-link></header>
         <!-- 通过 -->
         <EnterpriseCredit_true v-if="EnterpriseCreditShow==1"></EnterpriseCredit_true>
         <!-- 审核中 -->

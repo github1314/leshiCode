@@ -12,18 +12,18 @@
                 <el-form-item label="手机号">
                     <el-input class="" v-model="data.phone"></el-input>
                 </el-form-item>
-                <el-form-item label="验证码" class="img_Yz">
-                    <el-input></el-input>
-                    <img :src="code.img_code_url" alt="验证码">
+                <el-form-item label="图片验证码" class="img_Yz">
+                    <el-input v-model="data.img_code_i"></el-input>
+                    <img :src="code.img_code_url" alt="验证码" @click="img_code">
                 </el-form-item>
             </template>
 
             <el-form-item v-if="active!==0" label="手机号">
-                <div class="" style="padding-left: 15px;" >{{data.phone | PrivacyPhone}}</div>
+                <div class="" style="padding-left: 15px;">{{data.phone | PrivacyPhone}}</div>
             </el-form-item>
 
-            <el-form-item label="手机验证码" v-if="active===1">
-                <el-input>
+            <el-form-item label="短信验证码" v-if="active===1">
+                <el-input v-model="data.verificationMessage">
                     <el-button class="send"
                                style="width:150px;"
                                slot="append"
@@ -37,14 +37,12 @@
 
             <template v-if="active===2">
                 <el-form-item label="新密码">
-                    <el-input type="password"></el-input>
+                    <el-input type="password" v-model="data.pwd1"></el-input>
                 </el-form-item>
                 <el-form-item label="重复新密码">
-                    <el-input type="password"></el-input>
+                    <el-input type="password" v-model="data.pwd2"></el-input>
                 </el-form-item>
             </template>
-
-
 
             <el-form-item>
                 <el-button class="submit" @click="sub" type="primary" :disabled="!checked">{{submit_text[active]}}
@@ -67,12 +65,16 @@
                     timer: null,
                     countdown: 10,
                     code_send: true,
-                    img_code_url: 'http://placeholder.qiniudn.com/80x40',
+                    img_code_url: 'http://placehold.it/80x40/000000/ffffff?text=Q W E R',
                     code_send_text: '发送验证码',
                 },
                 data: {
-                    phone: '',
-                    yz: ''
+                    phone: '18511110837',
+                    yz: '',
+                    img_code_i: '',
+                    verificationMessage: '',
+                    pwd1: '',
+                    pwd2: ''
                 }
             }
         },
@@ -82,8 +84,25 @@
 
         // 事件
         methods: {
+            // 图片验证码
+            img_code() {
+                this.$http.post('/api/imageValidate/imgValidate', this.qs.stringify()).then(response => {
+                    this.code.img_code_url = 'data:image/png;base64,' + response.data.data.image
+                }).catch(error => {
+                });
+            },
+
             // 短信倒计时
             send() {
+                //发送的方法
+                this.$http.post('/api/syst/sendMessage', this.qs.stringify({
+                    mobileNumber: this.data.phone,
+                })).then(response => {
+
+                }).catch(error => {
+                });
+
+
                 let send_f = (() => {
                     this.code.countdown--;
                     if (this.code.countdown <= 0) {
@@ -103,17 +122,117 @@
             },
             sub() {
                 if (this.active === 0) {
-                    //this.send();
-                    this.active = 1;
-                } else if (this.active === 1) {
-                    this.active = 2
+                    let phone = /^(0|86|17951)?(13[0-9]|15[012356789]|17[3678]|18[0-9]|14[57])[0-9]{8}$/.test(this.data.phone);
+
+                    if (!phone) {
+                        this.$message({
+                            showClose: true,
+                            message: '请输入正确的手机号！',
+                            type: 'error'
+                        });
+                    } else if (!this.data.img_code_i) {
+                        this.$message({
+                            showClose: true,
+                            message: '请输入验证码！',
+                            type: 'error'
+                        });
+                    } else {
+                        this.$http.post('/api/syst/verificationCode', this.qs.stringify({
+                            mobileNumber: this.data.phone,
+                            verificationCode: this.data.img_code_i
+                        })).then(response => {
+
+                            if (response.data.code !== 200) {
+                                this.img_code();
+                                this.$message({
+                                    showClose: true,
+                                    message: response.data.msg,
+                                    type: 'error'
+                                });
+                            } else {
+                                this.active = 1;
+                            }
+                        }).catch(error => {
+                        });
+                    }
+
+
+                } else if (this.active === 1) {         // 第二步
+
+                    if (this.data.verificationMessage) {
+                        // 短信验证码是否正确
+                        this.$http.post('/api/syst/verificationMessage', this.qs.stringify({
+                            mobileNumber: this.data.phone,
+                            messageCode: this.data.verificationMessage
+                        })).then(response => {
+                            if (response.data.code !== 200) {
+                                this.$message({
+                                    showClose: true,
+                                    message: response.data.msg,
+                                    type: 'error'
+                                });
+                            } else {
+                                this.active = 2;
+                            }
+                        }).catch(error => {
+                        });
+                    } else {
+                        this.img_code();
+                        this.$message({
+                            showClose: true,
+                            message: '请先输入验证码！',
+                            type: 'error'
+                        });
+                    }
+
+
                 } else if (this.active === 2) {
-                    this.active = 0
+
+                    // 密码未填写
+                    if (this.data.pwd1 === '' || this.data.pwd2 === '') {
+                        this.$message({
+                            showClose: true,
+                            message: '请先输入两次密码！',
+                            type: 'error'
+                        });
+                    } else {
+                        // 密码不相等
+                        if (this.data.pwd1 === this.data.pwd2) {
+                            // 密码长度不合法
+                            if (this.data.pwd1.length < 6 || this.data.pwd1.length > 18) {
+                                this.$message({
+                                    showClose: true,
+                                    message: '密码长度最少6位，最长18位！',
+                                    type: 'error'
+                                });
+                            }else{
+                                this.$http.post('/api/syst/resetPassWord',this.qs.stringify({
+                                    mobileNumber: this.data.phone,
+                                    passWord:this.data.pwd1
+                                })).then(response => {
+                                    if(response.data.code!==200){
+                                        console.log(response);
+                                    }else{
+                                        this.$router.push({name:'login'})
+                                    }
+                                }).catch(error => {});
+                            }
+                        } else {
+                            this.$message({
+                                showClose: true,
+                                message: '输入两次密码不匹配！',
+                                type: 'error'
+                            });
+                        }
+                    }
+
+
                 }
             }
         },
         created: function () {
-
+            // 刚进入页面 触发图片验证码
+            this.img_code();
         }
     }
 </script>

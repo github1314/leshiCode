@@ -6,8 +6,15 @@
                 <a href="#" class="header_leftBox_right">在线客服</a>
             </div>
             <div class="header_rightBox">
-                <a href="#">你好，0062602</a>
-                <a href="#">【退出】</a>
+                <template v-if="!this.$store.state.account.login">
+                    <router-link :to="{name:'login'}">登陆</router-link>
+                </template>
+
+                <template v-else>
+                    <router-link :to="{name:'index'}">您好 {{this.$store.state.account.id}}</router-link>&nbsp;
+                    <div style="display: inline-block;" @click="loginQuit">【退出】</div>
+                </template>
+
                 <span>|</span>
                 <a href="#">个人理财</a>
                 <span>|</span>
@@ -50,24 +57,43 @@
 </template>
 
 <script>
-
     export default {
         name: '',
         data() {
             return {
-                headerNavigation: false
+                headerNavigation: false,
             }
         },
-        components: {
-
-        },
+        computed: {},
+        components: {},
         methods: {
+
             headerShow() {
                 this.headerNavigation = !this.headerNavigation;
             },
-            bao(){
-                this.$router.push('/bao')
+            bao() {
+                this.$router.push({name: 'overview'})
+            },
+            loginQuit() {   // 退出
+                this.$store.commit('quit');
+                this.$router.push({name: 'login'});
+                this.$http.post('/api/sys/loginQuit').then(response => {
+
+                }).catch(error => {});
             }
+        },
+        created: function () {
+            this.$http.post('/api/syst/senseToken', this.qs.stringify()).then(response => {
+                if (response.data.code === 200) {
+                    this.$store.commit('info',{
+                        login:true,
+                    });
+                }
+            }).catch(error => {
+            });
+        },
+        mounted() {
+
         }
     }
 </script>

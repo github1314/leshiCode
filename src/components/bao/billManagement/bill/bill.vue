@@ -173,7 +173,14 @@
             } else if (this.$route.params.type === 'output') {
                 // 应付账单
                 this.type = '应付账单'
-            }
+            };
+
+            //应收账单的添加账单接口
+            this.$http.post('/api/receivables/addClientReceivable',this.qs.stringify()).then((res)=>{
+
+            }).catch((err)=>{
+
+            });
 
 
         }

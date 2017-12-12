@@ -8,19 +8,19 @@
                 <ul>
                     <li>
                         <span>预计费用总计</span>
-                        <span>104.45元</span>
+                        <span>{{ssData.predictSum | currency('')}}元</span>
                     </li>
                     <li>
                         <span>预计利息</span>
-                        <span>60.00元</span>
+                        <span>{{ssData.predictInterest | currency('')}}元</span>
                     </li>
                     <li>
                         <span>预计服务费</span>
-                        <span>12.89元</span>
+                        <span>{{ssData.predictServiceFee | currency('')}}元</span>
                     </li>
                     <li>
                         <span>预计手续费</span>
-                        <span>40.00</span>
+                        <span>{{ssData.predictHandleFee | currency('')}}元</span>
                     </li>
                 </ul>
             </div>
@@ -28,19 +28,19 @@
                 <ul>
                     <li>
                         <span>预计到账金额</span>
-                        <span>7960.00元</span>
+                        <span>{{ssData.predictAccount | currency('')}}元</span>
                     </li>
                     <li>
                         <span>还款方式</span>
-                        <span>一次性还本付息</span>
+                        <span>{{ssData.repaymentType}}</span>
                     </li>
                     <li>
                         <span>服务费收取方式</span>
-                        <span>后收</span>
+                        <span>{{ssData.servicePayType}}</span>
                     </li>
                     <li>
                         <span>手续费收取方式</span>
-                        <span>先收</span>
+                        <span>{{ssData.procedureType}}</span>
                     </li>
                 </ul>
             </div>
@@ -58,16 +58,17 @@
                 <th>合计(元)</th>
                 <th>付款方</th>
             </tr>
-            <tr v-for="i in 2" :key="i">
-                <td>2018-09-09</td>
-                <td>8000.00</td>
-                <td>51.56</td>
-                <td>--</td>
-                <td>12.89</td>
-                <td>8045.89</td>
-                <td>乐视致新</td>
+            <tr v-for="item in hkData">
+                <td>{{item.repayDate}}</td>
+                <td>{{item.amortizedPrincipal}}</td>
+                <td>{{item.amortizedInterest}}</td>
+                <td>{{item.PFEE}}</td>
+                <td>{{item.SFEE}}</td>
+                <td>{{item.periodMoney}}</td>
+                <td>{{item.payer}}</td>
             </tr>
         </table>
+
     </div>
 </template>
 
@@ -76,10 +77,25 @@
     export default {
         name: 'shisuanResult',
         data() {
-            return {}
+            return {
+//
+            }
         },
-        components: {},
-        methods: {}
+        components: {
+
+
+        },
+        methods: {
+
+
+        },
+        props:['ssData','hkData'],
+        mounted:function () {
+
+        },
+        computed: {
+
+        }
     }
 </script>
 

@@ -18,7 +18,6 @@ import accountQuery from '@/components/bao/accountAdministration/accountquery/ac
 import accountqueryHomepage from '@/components/bao/accountAdministration/accountquery/accountqueryHomepage'
 import accountSetting from '@/components/bao/accountAdministration/accountSetting/accountSetting'
 import certification from '@/components/bao/certification/certification'
-import editAccount from '@/components/bao/accountAdministration/accountSetting/editAccount'
 import accountOperation from '@/components/bao/accountAdministration/accountOperation/accountOperation'
 
 //企业授信
@@ -32,11 +31,11 @@ import BillsPayable from '@/components/bao/billManagement/BillsPayable/BillsPaya
 // 新增账单或者查看账单
 import bill from '@/components/bao/billManagement/bill/bill'
 
-
 //贷款管理
 import loan from '@/components/bao/LoanManagement/loan'
 import repayment from '@/components/bao/LoanManagement/repayment'
 import lanDetails from '@/components/bao/LoanManagement/lanDetails'
+import repaymentPage from '@/components/bao/LoanManagement/repaymentPage'
 
 //融资管理
 import financingApply from '@/components/bao/financingManagement/financingApply'
@@ -49,7 +48,7 @@ Vue.use(Router);
 
 
 const router = new Router({
-    mode: 'history',
+    // mode: 'history',
     routes: [
         {
             path: '/',
@@ -168,17 +167,6 @@ const router = new Router({
                     },
                 },
                 {
-                    path: 'editAccount',
-                    name: 'editAccount',
-                    meta: {
-                        list: 'editAccount',
-                        title: '账户设置/修改'
-                    },
-                    components: {
-                        detail: editAccount
-                    },
-                },
-                {
                     path: 'EnterpriseCredit',
                     name: 'EnterpriseCredit',
                     meta: {
@@ -193,7 +181,7 @@ const router = new Router({
                     ]
                 },
                 {
-                    path: 'addEnterpriseCredit',
+                    path: 'addEnterpriseCredit/:id',
                     name: 'addEnterpriseCredit',
                     meta: {
                         list: 'EnterpriseCredit',
@@ -204,7 +192,7 @@ const router = new Router({
                     }
                 },
                 {
-                    path: 'changeEnterpriseCredit',
+                    path: 'changeEnterpriseCredit/:id',
                     name: 'changeEnterpriseCredit',
                     meta: {
                         list: 'EnterpriseCredit',
@@ -240,7 +228,7 @@ const router = new Router({
                     name: "BillsPayable",
                     meta: {
                         list: 'BillsPayable',
-                        title: "应收账单"
+                        title: "应付账单"
                     },
                     components: {
                         detail: BillsPayable
@@ -280,11 +268,22 @@ const router = new Router({
                     }
                 },
                 {
-                    path:"lanDetails/:type/:id",
+                    path:"repaymentPage/:id",
+                    name:"repaymentPage",
+                    meta:{
+                        list:"repayment",
+                        title:"申请还款"
+                    },
+                    components:{
+                        detail:repaymentPage
+                    }
+                },
+                {
+                    path:"lanDetails/:type/:id/:code",
                     name:"lanDetails",
                     meta:{
                         list:"repayment",
-                        title:"我的借款/还款详情"
+                        title:"详情"
                     },
                     components:{
                         detail:lanDetails
@@ -324,17 +323,16 @@ const router = new Router({
                     }
                 },
                 {
-                    path:"financingExamineDetails/:type/:id",
+                    path:"financingExamineDetails/:type/:id/:code",
                     name:"financingExamineDetails",
                     meta:{
                         list:"financingExamine",
-                        title:"融资申请审核"
+                        title:"融资申请审核详情"
                     },
                     components:{
                         detail:financingExamineDetails
                     }
                 },
-
             ]
         },
 

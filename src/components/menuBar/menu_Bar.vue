@@ -143,10 +143,10 @@
         }
 
         // 设计图颜色与背景
-        /*
+
         // 菜单的背景和边框颜色
-        @menu_bg:#ecf5ff;
-        @menu_link_color:rgb(236, 245, 255);
+        /*@menu_bg:#ecf5ff;
+        @menu_link_color:rgb(236, 245, 255);*/
 
 
         // 重置样式
@@ -155,70 +155,70 @@
                 border-right: none !important;
             }
         }
-
-        .el-menu-item, .el-submenu__title{
-            line-height: 50px;
-            height: 50px;
-            font-size:16px;
-        }
-        .el-menu-vertical{
-            // 第一层
-            &>.el-menu-item {
-                height: 50px;
-                line-height: 50px;
-                border-left: 5px solid rgba(255,255,255,0);
-                &:hover{
-                    border-left: 5px solid @a_hover;
-                }
-                &.is-active{
-                    border-left: 5px solid @a_hover;
-                    background-color: @menu_bg;
-                    &>div{
-                        background-color: @menu_bg;
-                        border-left: 5px solid @menu_bg;
-                    }
-                }
-            }
-        }
-
-        .el-submenu {
-            .el-submenu__title{
-                border-left: 5px solid rgba(255,255,255,0);
-                &:hover+ul{
-                    background-color: @menu_link_color;
-
-                }
-                i{
+        /*
+                .el-menu-item, .el-submenu__title{
+                    line-height: 50px;
+                    height: 50px;
                     font-size:16px;
-                    color:@a_hover;
                 }
-            }
-            &.is-active{
-                .el-submenu__title{
-                    background-color: @menu_bg;
-                    border-left: 5px solid @a_hover;
-                }
-                .el-menu{
-                    background-color: @menu_link_color;
-                }
-            }
-            &.is-opened{
-                &:hover{
-                    background-color: @menu_link_color;
-                    .el-menu{
-                        background-color: @menu_link_color;
+                .el-menu-vertical{
+                    // 第一层
+                    &>.el-menu-item {
+                        height: 50px;
+                        line-height: 50px;
+                        border-left: 5px solid rgba(255,255,255,0);
+                        &:hover{
+                            border-left: 5px solid @a_hover;
+                        }
+                        &.is-active{
+                            border-left: 5px solid @a_hover;
+                            background-color: @menu_bg;
+                            &>div{
+                                background-color: @menu_bg;
+                                border-left: 5px solid @menu_bg;
+                            }
+                        }
                     }
                 }
 
-                // 二级菜单
-                .el-menu-item{
-                    &:hover{
-                        color:@a_hover;
+                .el-submenu {
+                    .el-submenu__title{
+                        border-left: 5px solid rgba(255,255,255,0);
+                        &:hover+ul{
+                            background-color: @menu_link_color;
+
+                        }
+                        i{
+                            font-size:16px;
+                            color:@a_hover;
+                        }
+                    }
+                    &.is-active{
+                        .el-submenu__title{
+                            background-color: @menu_bg;
+                            border-left: 5px solid @a_hover;
+                        }
+                        .el-menu{
+                            background-color: @menu_link_color;
+                        }
+                    }
+                    &.is-opened{
+                        &:hover{
+                            background-color: @menu_link_color;
+                            .el-menu{
+                                background-color: @menu_link_color;
+                            }
+                        }
+
+                        // 二级菜单
+                        .el-menu-item{
+                            &:hover{
+                                color:@a_hover;
+                            }
+                        }
                     }
                 }
-            }
-        }
-        */
+                */
 
     }
 </style>
